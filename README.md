@@ -1,16 +1,63 @@
-# React + Vite
+# 🐾 Котовасия — Сайт Спасенных Котиков
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Добро пожаловать в проект **«Котовасия»**! Этот премиальный веб-сайт создан специально для твоей девушки, чтобы бережно хранить истории, хронологию обновлений и фотографии всех котиков, которых она спасла, вылечила и пристроила в Белграде.
 
-Currently, two official plugins are available:
+Сайт работает на базе **React + TypeScript + Vite** и имеет премиальный, современный интерфейс с мягкой теплой цветовой палитрой, микро-анимациями, динамической статистикой, удобной фильтрацией и интерактивными карточками. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Каждая карточка ведет на подробный профиль котика с его фотогалереей (и полноэкранным слайдером-лайтбоксом) и интерактивной **хронологической шкалой (таймлайном)**, которая воссоздает всю историю спасения шаг за шагом прямо из реальных постов в Telegram!
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Как обновлять сайт (Спарсить новые посты)
 
-## Expanding the ESLint configuration
+Сайт работает по удобной бессерверной технологии: все сырые посты хранятся отдельно, а вы вручную и со 100% точностью можете привязывать их к конкретным котикам! Это исключает любые ошибки авто-распознавания.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Если в Telegram-канале появились новые посты, новые котики или новые фотографии:
+
+### 1. Запуск парсера
+Сначала соберите все посты и медиа-ссылки из Telegram в локальный файл:
+```bash
+node scrape_telegram.js
+```
+*Этот скрипт аккуратно обойдет страницы канала с задержкой 1.2 секунды, чтобы избежать блокировок со стороны Telegram, и автоматически сгенерирует TypeScript-базу данных в `src/data/posts.ts`.*
+
+### 2. Привязка постов к котикам
+Откройте файл `src/data/cats.ts` и найдите нужного котика (или создайте нового). Просто добавьте ID новых постов в его массив **`postIds`**:
+```typescript
+{
+  id: 'panteri',
+  name: 'Пантери',
+  ...
+  postIds: [222, 229, 346, 564, 638, 652] // Просто добавьте ID нового поста в конец!
+}
+```
+*React-приложение автоматически найдет тексты, даты, картинки и реакции этих постов в `src/data/posts.ts` и мгновенно перестроит хронологический таймлайн и фотогалерею в профиле котика на сайте! Никакого лишнего кода писать не нужно.*
+
+---
+
+## 🚀 Локальный запуск и сборка сайта
+
+### Разработка (Локальный запуск)
+Для запуска сайта на локальном компьютере:
+```bash
+npm run dev
+```
+После этого сайт будет доступен в браузере по адресу: [http://localhost:5173/cat_adoption](http://localhost:5173/cat_adoption).
+
+### Сборка для публикации (Production Build)
+Чтобы собрать оптимизированный production-пакет для публикации на хостинге (например, GitHub Pages, Vercel, Netlify):
+```bash
+npm run build
+```
+Готовые оптимизированные файлы для заливки на хостинг появятся в папке `dist/`.
+
+---
+
+## 📂 Структура проекта
+
+* `scrape_telegram.js` — Умный парсер публичной веб-версии Telegram-канала `@care_cats`, который генерирует `src/data/posts.ts`.
+* `src/data/posts.ts` — База данных сырых спарсенных постов с текстами, датами, медиа и реакциями из Telegram.
+* `src/data/cats.ts` — Наш основной каталог котиков. Здесь вы можете вручную настраивать имена, описания, статусы, теги и массив `postIds` для идеальной привязки.
+* `src/pages/Home.tsx` — Главная страница с интерактивной галереей, поисковыми фильтрами и премиальным модальным окном историй/лайтбоксом.
+* `src/pages/About.tsx` — Красивая страница с описанием миссии проекта, отчетом о TNR-деятельности и волонтерскими контактами.
+* `src/index.css` — Современный UI-кит с мягкой палитрой, эффектами glassmorphism, деревом таймлайна и анимациями.
